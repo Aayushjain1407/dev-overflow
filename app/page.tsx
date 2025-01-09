@@ -1,7 +1,7 @@
 const Home = () => {
   return(
     <>
-  <h1 className="h1-bold font-inter">
+  <h1 className="h1-bold font-inter text-white">
     Welcome to the World of Next.js
     </h1>
     <h1 className="h1-bold font-spaceGrotesk">
