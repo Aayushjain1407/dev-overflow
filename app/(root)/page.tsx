@@ -1,4 +1,5 @@
 // import { auth } from "@/auth";
+import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
@@ -24,8 +25,8 @@ const questions = [
     title: "How to learn Javascript?",
     description: "I want to learn JavaScript, can anyone help me?",
     tags: [
-      { _id: "1", name: "React" },
-      { _id: "2", name: "JavaScript" },
+      { _id: "1", name: "JavaScript"},
+      { _id: "2", name: "JavaScript"},
     ],
     author: { _id: "1", name: "John Doe" },
     upvotes: 10,
@@ -35,15 +36,21 @@ const questions = [
   },
 ];
 interface SearchParams {
-  searchParams: Promise<{[key:string]: string}>;
+  searchParams: Promise<{ [key: string]: string }>;
 }
-const Home = async ({searchParams}: SearchParams) => {
+const Home = async ({ searchParams }: SearchParams) => {
   // const session = await auth();
   // console.log(session);
-  const {query= ""} = await searchParams;
-  const filterQuestions = questions.filter((question) => 
-    question.title.toLowerCase().includes(query?.toLowerCase())
-  );
+  const { query = "", filter = "" } = await searchParams;
+  const filterQuestions = questions.filter((question) => {
+    const matchesQuery = question.title
+      .toLowerCase()
+      .includes(query.toLowerCase());
+    const matchesFilter = filter
+      ? question.tags[0].name.toLowerCase() === filter.toLowerCase()
+      : true;
+      return matchesQuery && matchesFilter;
+  });
 
   return (
     <>
@@ -61,12 +68,11 @@ const Home = async ({searchParams}: SearchParams) => {
           otherClasses="flex-1"
         />
       </section>
-      {/* HomeFilter */}
+      <HomeFilter />
       <div className="mt-10 flex w-full flex-col gap-6">
-          {filterQuestions.map((question) => (
-            <h1 key={question._id}>{question.title}</h1>
-
-          ))}
+        {filterQuestions.map((question) => (
+          <h1 key={question._id}>{question.title}</h1>
+        ))}
       </div>
     </>
   );
