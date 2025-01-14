@@ -1,9 +1,10 @@
 // import { auth } from "@/auth";
+import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
-import { SearchParams } from "next/dist/server/request/search-params";
+// import { SearchParams } from "next/dist/server/request/search-params";
 import Link from "next/link";
 const questions = [
   {
@@ -14,7 +15,12 @@ const questions = [
       { _id: "1", name: "React" },
       { _id: "2", name: "JavaScript" },
     ],
-    author: { _id: "1", name: "John Doe" },
+    author: {
+      _id: "1",
+      name: "John Doe",
+      image:
+        "https://imgs.search.brave.com/5jDoLubl08MKH5Gr-qcr6c7StkwIz5gkjKiT6khJRa8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/dzNzY2hvb2xzLmNv/bS93M2ltYWdlcy9h/dmF0YXIyLnBuZw",
+    },
     upvotes: 10,
     answers: 2,
     views: 100,
@@ -25,10 +31,15 @@ const questions = [
     title: "How to learn Javascript?",
     description: "I want to learn JavaScript, can anyone help me?",
     tags: [
-      { _id: "1", name: "JavaScript"},
-      { _id: "2", name: "JavaScript"},
+      { _id: "1", name: "JavaScript" },
+      { _id: "2", name: "JavaScript" },
     ],
-    author: { _id: "1", name: "John Doe" },
+    author: {
+      _id: "1",
+      name: "John Doe",
+      image:
+        "https://imgs.search.brave.com/5jDoLubl08MKH5Gr-qcr6c7StkwIz5gkjKiT6khJRa8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/dzNzY2hvb2xzLmNv/bS93M2ltYWdlcy9h/dmF0YXIyLnBuZw",
+    },
     upvotes: 10,
     answers: 2,
     views: 100,
@@ -49,7 +60,7 @@ const Home = async ({ searchParams }: SearchParams) => {
     const matchesFilter = filter
       ? question.tags[0].name.toLowerCase() === filter.toLowerCase()
       : true;
-      return matchesQuery && matchesFilter;
+    return matchesQuery && matchesFilter;
   });
 
   return (
@@ -71,7 +82,7 @@ const Home = async ({ searchParams }: SearchParams) => {
       <HomeFilter />
       <div className="mt-10 flex w-full flex-col gap-6">
         {filterQuestions.map((question) => (
-          <h1 key={question._id}>{question.title}</h1>
+          <QuestionCard key={question._id} question={question} />
         ))}
       </div>
     </>
