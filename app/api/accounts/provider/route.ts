@@ -4,12 +4,14 @@ import { AccountSchema } from "@/lib/validation";
 import { APIErrorResponse } from "@/types/global";
 import { NextResponse } from "next/server";
 import Account from "@/database/account.model";
+import dbConnect from "@/lib/mongoose";
 
 //POST api/user/provider
 export async function POST(request:Request) {
     const { providerAccountId } = await request.json();
 
     try{
+        await dbConnect();
         const validatedData = AccountSchema.partial().safeParse({providerAccountId});
 
         if(!validatedData.success) throw new ValidationError(validatedData.error.flatten().fieldErrors);
