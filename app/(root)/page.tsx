@@ -4,6 +4,8 @@ import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
+// import handleError from "@/lib/handlers/error";
+// import { NotFoundError, ValidationError } from "@/lib/http-errors";
 // import { SearchParams } from "next/dist/server/request/search-params";
 import Link from "next/link";
 const questions = [
@@ -46,10 +48,23 @@ const questions = [
     createdAt: new Date(),
   },
 ];
+
+// const test = async() => {
+//   try {
+//     throw new ValidationError({
+//       title: ["Required"],
+//       tags: ["'JavaScript' is not a valid tag"]
+//     });
+//   } catch (error) {
+//     return handleError(error);
+//   }
+// }
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 const Home = async ({ searchParams }: SearchParams) => {
+  // const result = await test();
+  // console.log(result);
   // const session = await auth();
   // console.log(session);
   const { query = "", filter = "" } = await searchParams;
