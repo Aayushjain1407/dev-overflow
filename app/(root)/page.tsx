@@ -1,12 +1,12 @@
-// import { auth } from "@/auth";
+import { auth } from "@/auth";
 import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
-import { api } from "@/lib/api";
+// import { api } from "@/lib/api";
 // import dbConnect from "@/lib/mongoose";
-import handleError from "@/lib/handlers/error";
+// import handleError from "@/lib/handlers/error";
 // import { NotFoundError, ValidationError } from "@/lib/http-errors";
 // import { SearchParams } from "next/dist/server/request/search-params";
 import Link from "next/link";
@@ -51,21 +51,24 @@ const questions = [
   },
 ];
 
-const test = async() => {
-  try {
-    return await api.users.getAll()
-  } catch (error) {
-    return handleError(error);
-  }
-}
+// const test = async() => {
+//   try {
+//     return await api.users.getAll()
+//   } catch (error) {
+//     return handleError(error);
+//   }
+// }
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 const Home = async ({ searchParams }: SearchParams) => {
-  const result = await test();
-  console.log(result);
-  // const session = await auth();
-  // console.log(session);
+  
+  // const result = await test();
+  // console.log(result);
+
+  const session = await auth();
+  console.log( "Session", session);
+
   const { query = "", filter = "" } = await searchParams;
   const filterQuestions = questions.filter((question) => {
     const matchesQuery = question.title
