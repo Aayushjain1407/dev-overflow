@@ -13,6 +13,7 @@ export const SignInSchema = z.object({
 });
 
 export const SignUpSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
   username: z
     .string()
     .min(3, { message: "Username must be at least 3 characters long." })
@@ -20,6 +21,11 @@ export const SignUpSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, {
       message: "Username can only contain letters, numbers, and underscores.",
     }),
+  email: z.string().email({ message: "Please provide with a valid email." }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be atleast 6 characters long. " })
+    .max(100, { message: "Password cannot exceed more than 100 characters. " }),
 });
 
 export const AskQuestionSchema = z.object({
@@ -80,10 +86,14 @@ export const AccountSchema = z.object({
 export const SignInWithOAuthSchema = z.object({
   provider: z.enum(["google", "github"]),
   providerAccountId: z.string().min(1, { message: "Name is Required." }),
-  user:z.object({
-    name: z.string().min(1, {message: "Name is required."}),
-    username: z.string().min(3, {message: "Username must be atleast 3 characters long."}),
-    email: z.string().email({message: "Please provide a valid email addrress."}),
+  user: z.object({
+    name: z.string().min(1, { message: "Name is required." }),
+    username: z
+      .string()
+      .min(3, { message: "Username must be atleast 3 characters long." }),
+    email: z
+      .string()
+      .email({ message: "Please provide a valid email addrress." }),
     image: z.string().url("Invalid Image URL.").optional(),
   }),
 });
