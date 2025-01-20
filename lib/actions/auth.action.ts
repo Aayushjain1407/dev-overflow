@@ -27,24 +27,36 @@ export async function signUpWithCredentials(
   session.startTransaction();
 
   try {
-    const existingUser = await User.findOne({ email }).session(session);
+    const existingAccount = await Account.findOne({
+      provider: "credentials",
+      providerAccountId: email,
+    }).session(session);
 
-    if (existingUser) {
-      throw new Error("User already exists");
+    if (existingAccount) {
+      throw new Error("An account with these credentials already exists.");
     }
 
+    // Check for existing username
     const existingUsername = await User.findOne({ username }).session(session);
-
     if (existingUsername) {
       throw new Error("Username already exists");
     }
 
+    // Check if the user already exists in the `User` collection
+    let user = await User.findOne({ email }).session(session);
+    if (!user) {
+      user = await User.create([{ name, username, email }], { session });
+    }
+
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    // Create the new user
     const [newUser] = await User.create([{ username, name, email }], {
       session,
     });
 
+    // Create a credentials-based account for the user
     await Account.create(
       [
         {
@@ -60,17 +72,18 @@ export async function signUpWithCredentials(
 
     await session.commitTransaction();
 
+    // Auto sign-in the user after successful registration
     await signIn("credentials", { email, password, redirect: false });
 
     return { success: true };
   } catch (error) {
     await session.abortTransaction();
-
     return handleError(error) as ErrorResponse;
   } finally {
     await session.endSession();
   }
 }
+
 
 export async function signInWithCredentials(
   params: Pick<AuthCredentials, "email" | "password">

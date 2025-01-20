@@ -1,9 +1,11 @@
 "use server";
 
-import { ZodError, ZodSchema } from "zod";
-import { UnauthorizedError, ValidationError } from "../http-errors";
-import { auth } from "@/auth";
 import { Session } from "next-auth";
+import { ZodError, ZodSchema } from "zod";
+
+import { auth } from "@/auth";
+
+import { UnauthorizedError, ValidationError } from "../http-errors";
 import dbConnect from "../mongoose";
 
 type ActionOptions<T> = {
@@ -11,6 +13,11 @@ type ActionOptions<T> = {
   schema?: ZodSchema<T>;
   authorize?: boolean;
 };
+
+// 1. Checking whether the schema and params are provided and validated.
+// 2. Checking whether the user is authorized.
+// 3. Connecting to the database.
+// 4. Returning the params and session.
 
 async function action<T>({
   params,
@@ -26,20 +33,23 @@ async function action<T>({
           error.flatten().fieldErrors as Record<string, string[]>
         );
       } else {
-        return new Error("Schema Validation Error");
+        return new Error("Schema validation failed");
       }
     }
   }
 
   let session: Session | null = null;
+
   if (authorize) {
     session = await auth();
+
+    if (!session) {
+      return new UnauthorizedError();
+    }
   }
 
-  if (!session) {
-    return new UnauthorizedError();
-  }
   await dbConnect();
+
   return { params, session };
 }
 
